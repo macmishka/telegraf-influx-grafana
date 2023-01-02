@@ -16,9 +16,3 @@ scrape_configs:
       - targets: ['prometheus:9090']
         labels:
           __metrics_path__: /manager/prometheus/metrics
-
-  - job_name: 'rabbit'
-    scrape_interval: 10s
-    static_configs:
-      - targets: ['rabbit:15692']
-
