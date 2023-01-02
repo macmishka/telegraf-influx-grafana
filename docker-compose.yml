@@ -29,7 +29,7 @@ services:
       - backend
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; chmod 644 /etc/letsencrypt/archive/my-firefly.com/*.pem; sleep 12h & wait $${!}; done;'"
 
-mosquitto:
+  mosquitto:
     image: eclipse-mosquitto:latest
     container_name: mosquitto
     hostname: mosquitto
