@@ -87,7 +87,7 @@ mosquitto:
     networks:
       - backend
     volumes:
-      - ./conf/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
+      - ./conf/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/system.yaml
       - ./conf/grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
       - ./conf/grafana/dashboards:/dashboards
       - ./data/grafana:/var/lib/grafana
