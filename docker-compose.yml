@@ -27,37 +27,38 @@ services:
       - ./conf/nginx/www:/var/www/certbot
     networks:
       - backend
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; chmod 644 /etc/letsencrypt/archive/iotm.tk/*.pem; sleep 12h & wait $${!}; done;'"
-    depends_on:
-      - rabbit
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; chmod 644 /etc/letsencrypt/archive/my-firefly.com/*.pem; sleep 12h & wait $${!}; done;'"
 
-  rabbit:
-    image: rabbitmq:3-management-alpine
-    container_name: rabbit
-    hostname: rabbit
+mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    hostname: mosquitto
     restart: always
-    env_file:
-      - .env
+    volumes:
+      - ./conf/mosquitto:/mosquitto/config
+      - ./data/mosquitto:/mosquitto/data
+      - ./logs/mosquitto:/mosquitto/log
     ports:
       - 1883:1883
-      - 8883:8883
-      - 18883:18883
-      - 127.0.0.1:5671:5671
-      - 127.0.0.1:5672:5672
-      - 127.0.0.1:15672:15672
-      - 127.0.0.1:15692:15692
-    cap_add:
-      - ALL
+      - 9001:9001
+    networks:
+      - backend
+    depends_on:
+      - portainer
+      
+  node-red:
+    image: nodered/node-red:latest
+    container_name: nodered
+    restart: always
+    ports:
+      - 1880:1880
     networks:
       - backend
     volumes:
-      - ./conf/rabbit:/etc/rabbitmq
-      - ./conf/certbot/archive/iotm.tk:/etc/rabbitmq/certs
-      - ./data/rabbit:/var/lib/rabbitmq
-      - ./logs/rabbit:/var/log/rabbitmq
+      - ./data/nodered:/data
     depends_on:
-      - portainer
-
+      - mosquitto      
+      
   portainer:
     image: portainer/portainer:latest
     container_name: portainer
@@ -100,9 +101,9 @@ services:
       # https://grafana.com/plugins/yesoreyeram-boomtable-panel
       - GF_INSTALL_PLUGINS=flant-statusmap-panel,grafana-piechart-panel,grafana-polystat-panel,jdbranham-diagram-panel,michaeldmoore-multistat-panel,vonage-status-panel,yesoreyeram-boomtable-panel,camptocamp-prometheus-alertmanager-datasource,natel-influx-admin-panel
       - GF_SECURITY_COOKIE_SECURE="true"
-      - GF_SERVER_DOMAIN=iotm.tk
-      - GF_SERVER_ROOT_URL=https://iotm.tk/manager/grafana/
-      - GF_DEFAULT_INSTANCE_NAME=iotm
+      - GF_SERVER_DOMAIN=my-firefly.com
+      - GF_SERVER_ROOT_URL=https://my-firefly.com/manager/grafana/
+      - GF_DEFAULT_INSTANCE_NAME=my-firefly
       - GF_AUTH_PROXY_ENABLED=false
       - GF_USERS_ALLOW_SIGN_UP=false
     depends_on:
@@ -125,7 +126,7 @@ services:
       - --web.console.libraries=/usr/share/prometheus/console_libraries
       - --web.console.templates=/usr/share/prometheus/consoles
       - --web.route-prefix=/manager/prometheus
-      - --web.external-url=https://iotm.tk/manager/prometheus
+      - --web.external-url=https://my-firefly.com/manager/prometheus
     depends_on:
       - node-exporter
 
