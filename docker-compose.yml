@@ -46,18 +46,18 @@ mosquitto:
     depends_on:
       - portainer
       
-  node-red:
-    image: nodered/node-red:latest
-    container_name: nodered
-    restart: always
-    ports:
-      - 1880:1880
-    networks:
-      - backend
-    volumes:
-      - ./data/nodered:/data
-    depends_on:
-      - mosquitto      
+  #node-red:
+  #  image: nodered/node-red:latest
+  #  container_name: nodered
+  #  restart: always
+  #  ports:
+  #    - 1880:1880
+  #  networks:
+  #    - backend
+  #  volumes:
+  #    - ./data/nodered:/data
+  #  depends_on:
+  #    - mosquitto      
       
   portainer:
     image: portainer/portainer:latest
@@ -83,7 +83,7 @@ mosquitto:
     ports:
       - 127.0.0.1:3000:3000
     restart: always
-    user: "472"
+   # user: "472"
     networks:
       - backend
     volumes:
