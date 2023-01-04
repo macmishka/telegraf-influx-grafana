@@ -83,7 +83,7 @@ services:
     ports:
       - 127.0.0.1:3000:3000
     restart: always
-   user: "472"
+   user: "1000" # needs to be `id -u` // alternatively chown the grafana/data dir to 472:472
     networks:
       - backend
     volumes:
