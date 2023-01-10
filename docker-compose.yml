@@ -110,7 +110,7 @@ services:
       - prometheus
 
   prometheus:
-    image: prom/prometheus:v2.16.0
+    image: prom/prometheus
     container_name: prometheus
     networks:
       - backend
