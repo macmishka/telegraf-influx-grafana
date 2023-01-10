@@ -112,6 +112,7 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
+    user: root
     networks:
       - backend
     ports:
