@@ -127,8 +127,8 @@ services:
       - --web.console.templates=/usr/share/prometheus/consoles
       - --web.route-prefix=/manager/prometheus
       - --web.external-url=https://my-firefly.com/manager/prometheus
-    links:
-      - alertmanager:alertmanager
+ #   links:
+ #     - alertmanager:alertmanager
     depends_on:
       - node-exporter
 
