@@ -185,6 +185,15 @@ services:
       - /proc:/rootfs/proc:ro
       - /etc:/rootfs/etc:ro
       
+ kapacitor:
+    image: kapacitor:latest
+    networks:
+      - backend
+    volumes:
+      - ./conf/kapacitor:/etc/kapacitor
+      - ./logs/kapacitor:/var/log/kapacitor
+      - ./data/kapacitor:/home/kapacitor      
+      
 networks:
   backend:
     driver: bridge
