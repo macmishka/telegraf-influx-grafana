@@ -168,6 +168,19 @@ services:
     depends_on:
       - telegraf
 
+  influx2:
+    image: influxdb:latest
+    container_name: influx2
+    restart: always
+    environment:
+      - TZ=EET
+    networks:
+      - backend
+    ports:
+      - 12380:8086
+    volumes:
+      - ./data/influx2:/var/lib/influxdb
+
   telegraf:
     image: telegraf:alpine
     container_name: telegraf
