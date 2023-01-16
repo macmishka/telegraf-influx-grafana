@@ -179,7 +179,7 @@ services:
     ports:
       - 12380:8086
     volumes:
-      - ./data/influx2:/var/lib/influxdb
+      - ./data/influx2:/var/lib/influxdb2
 
   telegraf:
     image: telegraf:alpine
