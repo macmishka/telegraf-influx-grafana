@@ -43,20 +43,7 @@ services:
     networks:
       - backend
     depends_on:
-      - portainer
-      
-  #node-red:
-  #  image: nodered/node-red:latest
-  #  container_name: nodered
-  #  restart: always
-  #  ports:
-  #    - 1880:1880
-  #  networks:
-  #    - backend
-  #  volumes:
-  #    - ./data/nodered:/data
-  #  depends_on:
-  #    - mosquitto      
+      - portainer     
       
   portainer:
     image: portainer/portainer:latest
@@ -108,68 +95,53 @@ services:
     depends_on:
       - prometheus
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    user: root
-    networks:
-      - backend
-    ports:
-      - 127.0.0.1:9090:9090
-    restart: always
-    volumes:
-      - ./data/prometheus:/prometheus
-      - ./conf/prometheus:/etc/prometheus
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-      - --storage.tsdb.path=/prometheus
-      - --web.console.libraries=/usr/share/prometheus/console_libraries
-      - --web.console.templates=/usr/share/prometheus/consoles
-      - --web.route-prefix=/manager/prometheus
-      - --web.external-url=https://my-firefly.com/manager/prometheus
- #   links:
- #     - alertmanager:alertmanager
-    depends_on:
-      - node-exporter
+ #  prometheus:
+ #    image: prom/prometheus
+ #    container_name: prometheus
+ #    user: root
+ #    networks:
+ #      - backend
+ #    ports:
+ #      - 127.0.0.1:9090:9090
+ #    restart: always
+ #    volumes:
+ #      - ./data/prometheus:/prometheus
+ #      - ./conf/prometheus:/etc/prometheus
+ #    command:
+ #      - --config.file=/etc/prometheus/prometheus.yml
+ #      - --storage.tsdb.path=/prometheus
+ #      - --web.console.libraries=/usr/share/prometheus/console_libraries
+ #      - --web.console.templates=/usr/share/prometheus/consoles
+ #      - --web.route-prefix=/manager/prometheus
+ #      - --web.external-url=https://my-firefly.com/manager/prometheus
+ # #   links:
+ # #     - alertmanager:alertmanager
+ #    depends_on:
+ #      - node-exporter
 
-  node-exporter:
-    image: prom/node-exporter:v0.18.1
-    container_name: node-exporter
-    restart: always
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)'
-    ports:
-      - 9100:9100
-    networks:
-      - backend
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    depends_on:
-      - influx
+  # node-exporter:
+  #   image: prom/node-exporter:v0.18.1
+  #   container_name: node-exporter
+  #   restart: always
+  #   command:
+  #     - '--path.procfs=/host/proc'
+  #     - '--path.rootfs=/rootfs'
+  #     - '--path.sysfs=/host/sys'
+  #     - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)'
+  #   ports:
+  #     - 9100:9100
+  #   networks:
+  #     - backend
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /:/rootfs:ro
+  #   depends_on:
+  #     - influx
 
   influx:
-    image: influxdb:1.8-alpine
-    container_name: influx
-    restart: always
-    env_file:
-      - .env
-    networks:
-      - backend
-    ports:
-      - 8086:8086
-    volumes:
-      - ./data/influx:/var/lib/influxdb
-    depends_on:
-      - telegraf
-
-  influx2:
     image: influxdb:latest
-    container_name: influx2
+    container_name: influx
     restart: always
     environment:
       - TZ=EET
@@ -178,7 +150,7 @@ services:
     ports:
       - 12380:8086
     volumes:
-      - ./data/influx2:/var/lib/influxdb2
+      - ./data/influx:/var/lib/influxdb
 
   telegraf:
     image: telegraf:alpine
@@ -195,16 +167,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys:/rootfs/sys:ro
       - /proc:/rootfs/proc:ro
-      - /etc:/rootfs/etc:ro
-      
- kapacitor:
-    image: kapacitor:latest
-    networks:
-      - backend
-    volumes:
-      - ./conf/kapacitor:/etc/kapacitor
-      - ./logs/kapacitor:/var/log/kapacitor
-      - ./data/kapacitor:/home/kapacitor      
+      - /etc:/rootfs/etc:ro    
       
 networks:
   backend:
